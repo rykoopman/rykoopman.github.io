@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- This <title> shows up in the browser tab and search results. Change it to your name. -->
+<title>Ryan Koopman Portfolio</title>
+
+<!-- ===== GOOGLE FONTS =====
+     Three font families are loaded from Google:
+     - Spectral: a serif, used for the big headline text (name, project titles)
+     - IBM Plex Sans: a sans-serif, used for regular paragraph text
+     - IBM Plex Mono: a monospace font, used for small labels/tags to give it a "data" feel
+     The "preconnect" lines just speed up the font loading, they don't do anything visible. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ===== COLOR VARIABLES =====
+     These are "CSS custom properties" — think of them as named colors you can
+     reuse everywhere instead of typing the hex code over and over. If you want
+     to change the whole color scheme, you mostly just edit the values here. */
+  :root {
+    --ink: #12202B;          /* main text color (dark navy) */
+    --paper: #EEF1EE;         /* page background color (light) */
+    --paper-panel: #FFFFFF;   /* background of the white project boxes */
+    --rule: #C7CDC7;          /* color of thin border lines */
+    --brass: #8A6D3B;         /* gold/brass accent, used for small labels */
+    --teal: #2F6F62;          /* accent color for links */
+    --muted: #5B6B66;         /* dimmer gray-green text, used for secondary text */
+  }
+
+  /* ===== DARK MODE =====
+     If the visitor's device is set to dark mode, these colors swap in instead —
+     dark background, light text. This block only fires automatically based on
+     system settings. */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #EDEFEC;
+      --paper: #10181B;
+      --paper-panel: #16211F;
+      --rule: #34423E;
+      --brass: #C9A45F;
+      --teal: #6FB6A4;
+      --muted: #93A39C;
+    }
+  }
+  /* This lets dark mode be forced on manually (not used by default here, but
+     kept in case you ever add a toggle button). Safe to ignore. */
+  :root[data-theme="dark"] {
+    --ink: #EDEFEC;
+    --paper: #10181B;
+    --paper-panel: #16211F;
+    --rule: #34423E;
+    --brass: #C9A45F;
+    --teal: #6FB6A4;
+    --muted: #93A39C;
+  }
+
+  /* ===== GLOBAL RESET =====
+     box-sizing makes padding/borders count *inside* an element's width,
+     instead of adding to it — this avoids a lot of layout headaches. */
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; } /* smooth scroll if you ever add jump-links */
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.55; /* space between lines of text, for readability */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== PAGE WIDTH CONTAINER =====
+     Everything sits inside a max-width box so lines of text don't stretch
+     too wide on a big monitor. 760px keeps it readable, like a column in a
+     document. Change max-width to make the whole page wider or narrower. */
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;   /* centers the box horizontally */
+    padding: 0 28px;  /* breathing room on left/right edges */
+  }
+
+  /* ===== HERO (the top section: your name and intro) ===== */
+  header.hero {
+    padding: 88px 0 56px;
+    border-bottom: 1px solid var(--rule); /* thin line separating hero from content */
+  }
+  .kicker {
+    /* the small label above your name, e.g. "Portfolio & — Financial & Quantitative Analysis" */
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    margin: 0 0 18px;
+  }
+  h1.name {
+    /* your name, the biggest text on the page */
+    font-family: 'Spectral', serif;
+    font-weight: 500;
+    font-size: clamp(38px, 6vw, 56px); /* scales with screen size, min 38px, max 56px */
+    line-height: 1.08;
+    margin: 0 0 14px;
+    max-width: 14ch; /* keeps it from stretching too wide on desktop */
+  }
+  .role {
+    /* the one-line description under your name */
+    font-size: 19px;
+    color: var(--muted);
+    max-width: 46ch;
+    margin: 0 0 28px;
+  }
+  .contact-row {
+    /* the row of email / LinkedIn / location at the bottom of the hero */
+    display: flex;
+    flex-wrap: wrap;       /* lets items drop to a new line on small screens */
+    gap: 4px 22px;          /* vertical gap, horizontal gap between items */
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13.5px;
+  }
+  .contact-row a { color: var(--teal); text-decoration: none; border-bottom: 1px solid transparent; }
+  .contact-row a:hover, .contact-row a:focus-visible { border-bottom-color: var(--teal); }
+
+  /* ===== SECTION HEADERS =====
+     Used above "Selected Work" and "About" — a title plus a small counter
+     on the right (like "03" showing there are 3 projects). */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between; /* pushes title left, counter right */
+    margin: 64px 0 22px;
+  }
+  .section-head h2 {
+    font-family: 'Spectral', serif;
+    font-weight: 500;
+    font-size: 22px;
+    margin: 0;
+  }
+  .section-head .count {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* ===== PROJECT CARDS ("tombstones") =====
+     Each project is wrapped in a bordered white box — styled after the boxed
+     "tombstone" announcements used in finance to mark closed deals. */
+  .tombstone {
+    background: var(--paper-panel);
+    border: 1px solid var(--rule);
+    padding: 30px 32px;
+    margin-bottom: 20px; /* gap between project boxes */
+  }
+  .tombstone-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .tombstone-label {
+    /* small category label above each project title, e.g. "M&A · Valuation" */
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--brass);
+    letter-spacing: 0.03em;
+  }
+  .tombstone h3 {
+    /* the project title itself */
+    font-family: 'Spectral', serif;
+    font-weight: 500;
+    font-size: 21px;
+    margin: 4px 0 12px;
+  }
+  .tombstone p.desc {
+    /* the paragraph describing the project */
+    margin: 0 0 16px;
+    color: var(--ink);
+    max-width: 62ch;
+  }
+  .stack {
+    /* the row of small tool/skill tags, e.g. "Python", "Monte Carlo Simulation" */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    margin-bottom: 18px;
+  }
+  .tag {
+    /* styling for one individual tag/pill */
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    padding: 3px 9px;
+  }
+  .tombstone-links {
+    /* the row of links at the bottom of each project box */
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+  }
+  .tombstone-links a {
+    color: var(--teal);
+    text-decoration: none;
+    border-bottom: 1px solid var(--teal);
+    padding-bottom: 1px;
+  }
+  .tombstone-links a:hover, .tombstone-links a:focus-visible { opacity: 0.7; }
+  .tombstone-links .placeholder {
+    /* styling for the "+ add link" placeholders — dashed underline so they
+       visually read as "not filled in yet". Replace these hrefs with real
+       links and you can drop the "placeholder" class if you want a solid
+       underline like the other links. */
+    color: var(--muted);
+    border-bottom: 1px dashed var(--rule);
+  }
+
+  /* ===== ABOUT SECTION ===== */
+  .about p {
+    max-width: 62ch; /* keeps paragraph line length comfortable to read */
+    margin: 0 0 16px;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    border-top: 1px solid var(--rule);
+    margin-top: 72px;
+    padding: 28px 0 60px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between; /* "last updated" on left, tagline on right */
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ===== MOBILE ADJUSTMENTS =====
+     Anything in here only applies when the screen is 560px wide or less
+     (phones). It reduces padding and stacks things vertically so nothing
+     feels cramped. */
+  @media (max-width: 560px) {
+    header.hero { padding: 64px 0 40px; }
+    .tombstone { padding: 24px 20px; }
+    .tombstone-top { flex-direction: column; }
+    footer { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Everything visible on the page lives inside this .wrap div, which just
+     controls the max width and centering (see .wrap rules above). -->
+<div class="wrap">
+
+  <!-- ===== HERO SECTION =====
+       This is the top of the page: your name, role, and contact info.
+       Edit the text directly below — no need to touch the CSS above. -->
+  <header class="hero">
+    <p class="kicker">Portfolio — Financial &amp; Quantitative Analysis</p>
+    <h1 class="name">Ryan Koopman</h1>
+    <p class="role">Analyst work spanning M&amp;A valuation, simulation modeling, prediction modeling, and applied research. Selected engagements below.</p>
+    <div class="contact-row">
+      <!-- Replace the email address and LinkedIn URL below with your real ones -->
+      <a href="mailto:you@email.com">ry.koopman.app@gmail.com</a>
+      <a href="#">linkedin.com/in/ryankoopman</a>
+      <span style="color: var(--muted);">Seattle, WA</span>
+    </div>
+  </header>
+
+  <!-- ===== PROJECTS SECTION =====
+       Each <article class="tombstone"> block below is one project card.
+       To add a new project, copy one whole <article>...</article> block
+       and paste it before </section>, then edit the text inside.
+       To remove a project, delete its whole <article>...</article> block. -->
+  <section>
+    <div class="section-head">
+      <h2>Selected Work</h2>
+      <span class="count">04</span> <!-- update this number if you add/remove projects -->
+    </div>
+
+    <!-- PROJECT 1 -->
+    <article class="tombstone">
+      <div class="tombstone-top">
+        <div>
+          <p class="tombstone-label">M&amp;A · Valuation</p>
+          <h3>Merger Analysis &amp; Monte Carlo Valuation</h3>
+        </div>
+      </div>
+      <p class="desc">
+        A merger evaluation presentation built around a Python-driven Monte Carlo simulation, modeling deal outcomes
+        under uncertain debt premiums, leverage and coverage covenants, and product portfolio assessment to stress-test the transaction case
+        beyond a single-point valuation.
+      </p>
+      <!-- Each <span class="tag"> is one small pill. Add/remove <span> tags to change skills listed. -->
+      <div class="stack">
+        <span class="tag">Python</span>
+        <span class="tag">Monte Carlo Simulation</span>
+        <span class="tag">M&amp;A Valuation</span>
+	<span class="tag">Risk Assessment</span>
+      </div>
+      <!-- Replace href="#" with the real link to your deck/PDF once it's hosted somewhere
+           (Google Drive share link, GitHub, etc). Also remove class="placeholder" once it's real
+           if you want a solid underline instead of a dashed one. -->
+      <div class="tombstone-links">
+        <a href="#" class="placeholder">+ add link to deck</a>
+      </div>
+    </article>
+
+    <!-- PROJECT 2 -->
+    <article class="tombstone">
+      <div class="tombstone-top">
+        <div>
+          <p class="tombstone-label">Applied Research</p>
+          <h3>Comparing LLM Performance using a Solved Game</h3>
+        </div>
+      </div>
+      <p class="desc">
+        Can AI beat a human at Tic-Tac-Toe? A written analysis examining game theory reasoning performance across multiple LLM agents.Seeking to give more insight into the capabilities of 	AI to plan ahead, recognize patterns, and keep internal consistency. Framed for a business audience, translating technical findings into practical takeaways.
+      </p>
+      <div class="stack">
+        <span class="tag">Research</span>
+        <span class="tag">AI Prompting</span>
+	<span class="tag">Game Theory</spam>
+      </div>
+      <div class="tombstone-links">
+        <a href="#" class="placeholder">+ add link to write-up</a>
+      </div>
+    </article>
+
+    <!-- PROJECT 3 -->
+    <article class="tombstone">
+      <div class="tombstone-top">
+        <div>
+          <p class="tombstone-label">Cost Analysis</p>
+          <h3>Cost Analysis: Excel &amp; Python</h3>
+        </div>
+      </div>
+      <p class="desc">
+        A cost-structure analysis presentation combining Excel-based modeling with Python for data processing and
+        scenario analysis, identifying cost drivers and actionable savings opportunities.
+      </p>
+      <div class="stack">
+        <span class="tag">Excel</span>
+        <span class="tag">Python</span>
+        <span class="tag">Cost Modeling</span>
+      </div>
+      <div class="tombstone-links">
+        <a href="#" class="placeholder">+ add link to presentation</a>
+      </div>
+    </article>
+
+    <!-- PROJECT 4 -->
+    <article class="tombstone">
+      <div class="tombstone-top">
+        <div>
+          <p class="tombstone-label">Opportunity Analysis</p>
+          <h3>Cost Analysis: Excel &amp; Visualization</h3>
+        </div>
+      </div>
+      <p class="desc">
+        An geographic opportunity analysis presentation combining Excel-based data transformation and cleaning with Kepler.gl for clear trend mapping and
+        scenario analysis, highlighting nationwide debt pooling in the medical industry using a free data visualization software.
+      </p>
+      <div class="stack">
+        <span class="tag">Excel</span>
+        <span class="tag">Data Parsing &amp; Transformation</span>
+        <span class="tag">Data Visualization</span>
+      </div>
+      <div class="tombstone-links">
+        <a href="#" class="placeholder">+ add link to presentation</a>
+      </div>
+    </article>
+  </section>
+
+  <!-- ===== ABOUT SECTION =====
+       A short paragraph about you. Edit the text inside the <p> tag. -->
+  <section class="about">
+    <div class="section-head">
+      <h2>About</h2>
+    </div>
+    <p>
+      I am a financial analyst from the Seattle area. My focus is on prediction and simulation modeling using financial analysis techniques and visualization softwares.
+    </p>
+  </section>
+
+  <!-- ===== FOOTER =====
+       Small print at the very bottom of the page. -->
+  <footer>
+    <span>Last updated October 2026</span>
+    <span>Ryan Koopman | ry.koopman.app@gmail.com | 206-402-8376</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
